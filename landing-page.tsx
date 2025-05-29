@@ -56,7 +56,7 @@ export default function Component() {
 
           <div className="text-center space-y-2">
             <p className="text-sm text-gray-600">
-              Join <span className="font-semibold text-[#1A603D]">5,347</span> local food lovers
+              Join <span className="font-semibold text-[#1A603D]">5,338</span> local food lovers
             </p>
             <p className="text-xs text-gray-400">Weekly discoveries • Always local • Never spam</p>
           </div>
