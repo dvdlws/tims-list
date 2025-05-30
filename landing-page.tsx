@@ -1,8 +1,26 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card"
+import { subscribeToNewsletter } from "./actions"
+import { useState } from "react"
 
 export default function Component() {
+  const [message, setMessage] = useState('')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  
+  async function handleSubmit(formData: FormData) {
+    setStatus('loading')
+    const result = await subscribeToNewsletter(formData)
+    
+    if (result.success) {
+      setStatus('success')
+    } else {
+      setStatus('error')
+    }
+    
+    setMessage(result.message)
+  }
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-green-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-full shadow-xl border border-gray-100">
@@ -23,19 +41,31 @@ export default function Component() {
         </CardHeader>
 
         <CardContent className="space-y-6 bg-white">
-          <div className="max-w-md mx-auto space-y-4">
+          <form action={handleSubmit} className="max-w-md mx-auto space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Email Address</label>
               <Input
                 type="email"
+                name="email"
                 placeholder="your@email.com"
                 className="w-full h-12 border-gray-200 focus:border-[#1A603D] focus:ring-[#1A603D]"
+                required
               />
             </div>
-            <Button className="w-full h-12 bg-[#1A603D] hover:bg-[#0f4a2a] text-white text-base">
-              Join Tim's List For Free
+            <Button 
+              type="submit" 
+              className="w-full h-12 bg-[#1A603D] hover:bg-[#0f4a2a] text-white text-base"
+              disabled={status === 'loading'}
+            >
+              {status === 'loading' ? 'Joining...' : 'Join Tim\'s List For Free'}
             </Button>
-          </div>
+            
+            {message && (
+              <p className={`text-center text-sm ${status === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+                {message}
+              </p>
+            )}
+          </form>
 
           <div className="max-w-md mx-auto space-y-4">
             <div className="grid grid-cols-1 gap-3 text-sm">
@@ -56,7 +86,7 @@ export default function Component() {
 
           <div className="text-center space-y-2">
             <p className="text-sm text-gray-600">
-              Join <span className="font-semibold text-[#1A603D]">5,338</span> local food lovers
+              Join <span className="font-semibold text-[#1A603D]">2,847</span> local food lovers
             </p>
             <p className="text-xs text-gray-400">Weekly discoveries • Always local • Never spam</p>
           </div>
