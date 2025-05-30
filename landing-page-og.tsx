@@ -1,52 +1,8 @@
-'use client'
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card"
-import { useState } from "react"
 
 export default function Component() {
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
-  const [message, setMessage] = useState('')
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    
-    if (!email || !email.includes('@')) {
-      setStatus('error')
-      setMessage('Please enter a valid email address.')
-      return
-    }
-    
-    setStatus('loading')
-    
-    try {
-      const response = await fetch(`https://api.convertkit.com/v3/forms/${process.env.NEXT_PUBLIC_KIT_FORM_ID}/subscribe`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          api_key: process.env.NEXT_PUBLIC_KIT_API_KEY,
-          email: email,
-        }),
-      })
-      
-      if (response.ok) {
-        setStatus('success')
-        setMessage('Thank you for subscribing to Tim\'s List!')
-        setEmail('')
-      } else {
-        setStatus('error')
-        setMessage('Something went wrong. Please try again.')
-      }
-    } catch (error) {
-      setStatus('error')
-      setMessage('Something went wrong. Please try again.')
-    }
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-green-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-full shadow-xl border border-gray-100">
@@ -66,32 +22,19 @@ export default function Component() {
         </CardHeader>
 
         <CardContent className="space-y-6 bg-white">
-          <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
+          <div className="max-w-md mx-auto space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Email Address</label>
               <Input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 className="w-full h-12 border-gray-200 focus:border-[#1A603D] focus:ring-[#1A603D]"
-                required
               />
             </div>
-            <Button 
-              type="submit" 
-              className="w-full h-12 bg-[#1A603D] hover:bg-[#0f4a2a] text-white text-base"
-              disabled={status === 'loading'}
-            >
-              {status === 'loading' ? 'Joining...' : 'Join Tim\'s List For Free'}
+            <Button className="w-full h-12 bg-[#1A603D] hover:bg-[#0f4a2a] text-white text-base">
+              Join Tim's List For Free
             </Button>
-            
-            {message && (
-              <p className={`text-center text-sm ${status === 'success' ? 'text-green-600' : 'text-red-600'}`}>
-                {message}
-              </p>
-            )}
-          </form>
+          </div>
 
           <div className="max-w-md mx-auto space-y-4">
             <div className="grid grid-cols-1 gap-3 text-sm">
