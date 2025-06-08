@@ -26,6 +26,7 @@ export default function Component() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + process.env.NEXT_PUBLIC_BEEHIIV_API_KEY,
         },
         body: JSON.stringify({
           email: email,
@@ -39,6 +40,8 @@ export default function Component() {
         setMessage('Thank you for subscribing to Tim\'s List!')
         setEmail('')
       } else {
+        const errorData = await response.json()
+        console.log('Beehiiv error:', errorData)
         setStatus('error')
         setMessage('Something went wrong. Please try again.')
       }
