@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card"
@@ -11,7 +13,7 @@ export default function Component() {
   const [message, setMessage] = useState("")
   const [isSuccess, setIsSuccess] = useState(false)
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!email) {
@@ -52,7 +54,6 @@ export default function Component() {
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-green-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-full shadow-xl border border-gray-100">
         <CardHeader className="text-center space-y-6 bg-gradient-to-r from-white to-green-50/30">
-          {/* Minimal Logo */}
           <div className="space-y-3">
             <div className="inline-block">
               <h1 className="text-4xl font-light text-gray-800">Tim's</h1>
