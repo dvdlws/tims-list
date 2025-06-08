@@ -1,7 +1,5 @@
 "use client"
 
-import type React from "react"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card"
@@ -13,7 +11,7 @@ export default function Component() {
   const [message, setMessage] = useState("")
   const [isSuccess, setIsSuccess] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     if (!email) {
@@ -121,7 +119,7 @@ export default function Component() {
 
           <div className="text-center space-y-2">
             <p className="text-sm text-gray-600">
-              Join <span className="font-semibold text-[#1A603D]">2,847</span> local food lovers
+              Join <span className="font-semibold text-[#1A603D]">3,847</span> local food lovers
             </p>
             <p className="text-xs text-gray-400">Weekly discoveries • Always local • Never spam</p>
           </div>
