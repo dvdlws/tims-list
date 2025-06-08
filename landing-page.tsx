@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -6,49 +6,45 @@ import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/
 import { useState } from "react"
 
 export default function Component() {
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
-  const [message, setMessage] = useState('')
+  const [email, setEmail] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [message, setMessage] = useState("")
+  const [isSuccess, setIsSuccess] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    if (!email || !email.includes('@')) {
-      setStatus('error')
-      setMessage('Please enter a valid email address.')
+
+    if (!email) {
+      setMessage("Please enter your email address")
+      setIsSuccess(false)
       return
     }
-    
-    setStatus('loading')
-    
+
+    setIsSubmitting(true)
+    setMessage("")
+
     try {
-      const response = await fetch('https://api.beehiiv.com/v2/publications/' + process.env.NEXT_PUBLIC_BEEHIIV_PUBLICATION_ID + '/subscriptions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + process.env.NEXT_PUBLIC_BEEHIIV_API_KEY,
-        },
-        body: JSON.stringify({
-          email: email,
-          reactivate_existing: false,
-          send_welcome_email: true,
-        }),
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       })
-      
+
+      const data = await response.json()
+
       if (response.ok) {
-        setStatus('success')
-        setMessage('Thank you for subscribing to Tim\'s List!')
-        setEmail('')
+        setIsSuccess(true)
+        setMessage("Thanks for subscribing! Check your email to confirm.")
+        setEmail("")
       } else {
-        const errorData = await response.json()
-        console.log('Beehiiv error:', errorData)
-        setStatus('error')
-        setMessage('Something went wrong. Please try again.')
+        setIsSuccess(false)
+        setMessage(data.error || "Something went wrong. Please try again.")
       }
     } catch (error) {
-      console.error('Error:', error)
-      setStatus('error')
-      setMessage('Something went wrong. Please try again.')
+      setIsSuccess(false)
+      setMessage("Network error. Please try again.")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -56,6 +52,7 @@ export default function Component() {
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-green-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-full shadow-xl border border-gray-100">
         <CardHeader className="text-center space-y-6 bg-gradient-to-r from-white to-green-50/30">
+          {/* Minimal Logo */}
           <div className="space-y-3">
             <div className="inline-block">
               <h1 className="text-4xl font-light text-gray-800">Tim's</h1>
@@ -76,25 +73,31 @@ export default function Component() {
               <label className="text-sm font-medium text-gray-700">Email Address</label>
               <Input
                 type="email"
+                placeholder="your@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
                 className="w-full h-12 border-gray-200 focus:border-[#1A603D] focus:ring-[#1A603D]"
-                required
+                disabled={isSubmitting}
               />
             </div>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full h-12 bg-[#1A603D] hover:bg-[#0f4a2a] text-white text-base"
-              disabled={status === 'loading'}
+              disabled={isSubmitting}
             >
-              {status === 'loading' ? 'Joining...' : 'Join Tim\'s List For Free'}
+              {isSubmitting ? "Subscribing..." : "Join Tim's List For Free"}
             </Button>
-            
+
             {message && (
-              <p className={`text-center text-sm ${status === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+              <div
+                className={`text-sm text-center p-3 rounded-lg ${
+                  isSuccess
+                    ? "bg-green-50 text-green-700 border border-green-200"
+                    : "bg-red-50 text-red-700 border border-red-200"
+                }`}
+              >
                 {message}
-              </p>
+              </div>
             )}
           </form>
 
