@@ -22,14 +22,15 @@ export default function Component() {
     setStatus('loading')
     
     try {
-      const response = await fetch(`https://api.convertkit.com/v3/forms/${process.env.NEXT_PUBLIC_KIT_FORM_ID}/subscribe`, {
+      const response = await fetch('https://api.beehiiv.com/v2/publications/' + process.env.NEXT_PUBLIC_BEEHIIV_PUBLICATION_ID + '/subscriptions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          api_key: process.env.NEXT_PUBLIC_KIT_API_KEY,
           email: email,
+          reactivate_existing: false,
+          send_welcome_email: true,
         }),
       })
       
@@ -42,6 +43,7 @@ export default function Component() {
         setMessage('Something went wrong. Please try again.')
       }
     } catch (error) {
+      console.error('Error:', error)
       setStatus('error')
       setMessage('Something went wrong. Please try again.')
     }
